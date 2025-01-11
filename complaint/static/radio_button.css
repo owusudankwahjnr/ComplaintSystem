@@ -1,0 +1,55 @@
+/* Anonymity Toggle Styles */
+.anonymity-toggle {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border: 1px solid rgba(200, 200, 200, 0.8);
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.9); /* Matches form-container */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Adds depth */
+}
+
+.anonymity-toggle label {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.anonymity-toggle input[type="checkbox"] {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #007bff;
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    margin: 0; /* Prevents unwanted spacing */
+}
+
+.anonymity-toggle input[type="checkbox"]:checked {
+    background-color: #007bff;
+    border-color: #0056b3;
+    position: relative;
+}
+
+.anonymity-toggle input[type="checkbox"]:checked::before {
+    content: "✔";
+    font-size: 14px;
+    color: white;
+    position: absolute;
+    left: 4px;
+    top: 0px;
+}
+
+.anonymity-toggle input[type="checkbox"]:focus {
+    border-color: #0056b3;
+    outline: 2px solid rgba(0, 123, 255, 0.3);
+}

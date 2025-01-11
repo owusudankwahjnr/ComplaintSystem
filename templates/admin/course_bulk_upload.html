@@ -1,0 +1,13 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<h2>Bulk Upload Courses</h2>
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <p>Select an Excel file to upload courses. Ensure the file has a column named <strong>'name'</strong>.</p>
+  <input type="file" name="excel_file" accept=".xls,.xlsx" required>
+  <br><br>
+  <button type="submit" class="button">Upload</button>
+</form>
+<a href="../">Back to Course List</a>
+{% endblock %}

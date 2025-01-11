@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <title>Complaints</title>
+</head>
+<body>
+    <div class="complaint-list">
+        <h2>Complaints</h2>
+        <ul>
+            {% for complaint in complaints %}
+                <li>
+                    <a href="{% url 'complaint-detail' complaint.pk %}">
+                        {{ complaint.name }} - {{ complaint.complaint_status }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

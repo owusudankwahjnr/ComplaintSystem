@@ -1,0 +1,57 @@
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv/
+
+# Ignore all files in migrations folders
+*/migrations/*.py
+
+# But do not ignore the __init__.py file
+!*/migrations/__init__.py
+
+
+media
+# Django Files
+db.sqlite3
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+.
+# Static and Media Files (optional; keep in version control if needed)
+staticfiles/
+media/
+
+# Environment Variables
+.env
+
+# IDE and Editor Configurations
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
+# Testing
+coverage/
+*.cover
+.tox/
+.nox/
+.pytest_cache/
+htmlcov/
+
+# Deployment
+*.db
+*.env
+*.DS_Store
+*.bak
+*.old
+*.tmp
+
+# OS Generated Files
+Thumbs.db
+.DS_Store

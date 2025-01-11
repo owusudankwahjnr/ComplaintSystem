@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complaint Submitted</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            background:
+                  linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+                  url("https://site.gctu.edu.gh/wp-content/uploads/2023/01/cladding1.jpg")
+                  no-repeat center center fixed;
+            background-size: cover;
+        }
+        .container {
+            position: relative;
+            max-width: 600px;
+            height: 50%;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.8);
+        }
+        h1 {
+            color: #28a745;
+        }
+        p {
+            margin: 10px 0;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Your complaint has been recorded!</h1>
+        <p>Thank you for submitting your complaint.</p>
+        <a href="{% url 'anonymous-complaint-form' %}">Submit another complaint</a>
+    </div>
+</body>
+</html>

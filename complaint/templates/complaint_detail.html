@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Complaint Detail{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+{% endblock %}
+{% block content %}
+<div class="complaint-detail">
+    <h2>{{ complaint.complaint_type }}</h2>
+    <h2>{{ complaint.complaint_category }}</h2>
+    {% if complaint.name %}
+        <h2>
+            {% if complaint.student_id %} {{ complaint.student_id }} -  {% endif %}
+            {{ complaint.name }}
+        </h2>
+        {% if complaint.phone_number %}
+            <p><strong>Active Phone Number:</strong> {{ complaint.phone_number }}</p>
+        {% endif %}
+        {% if complaint.gender %}
+            <p><strong>Gender:</strong> {{ complaint.gender }}</p>
+        {% endif %}
+        {% if complaint.personal_email %}
+            <p><strong>Personal Email:</strong> {{ complaint.personal_email }}</p>
+        {% endif %}
+        {% if complaint.student_level %}
+            <p><strong>Student Level:</strong> {{ complaint.student_level }}</p>
+        {% endif %}
+        {% if complaint.certificate_type %}
+            <p><strong>Certificate Type:</strong> {{ complaint.certificate_type }}</p>
+        {% endif %}
+        {% if complaint.program %}
+            <p><strong>Program:</strong> {{ complaint.program }}</p>
+        {% endif %}
+        {% if complaint.course %}
+        <p><strong>Course:</strong> {{ complaint.course }}</p>
+        {% endif %}
+    {% else %}
+        <p><strong>Status:</strong> {{ complaint.complaint_status }}</p>
+        {% if complaint.description %}
+            <p><strong>Description:</strong></p>
+            <p>{{ complaint.description }}</p>
+        {% endif %}
+    {% endif %}
+    <p><strong>Created At:</strong> {{ complaint.created_at|date:"d M Y" }}</p>
+    <p><strong>Resolved At:</strong> {{ complaint.resolved_at|date:"d M Y" }}</p>
+    <hr>
+
+    <form method="POST" action="{% url 'update-complaint-status' complaint.pk %}">
+        {% csrf_token %}
+        <label for="status">Update Status:</label>
+        <select name="status" id="status" class="status-dropdown">
+            <option value="resolved" {% if complaint.complaint_status == "resolved" %}selected{% endif %}>Resolved</option>
+            <option value="unresolved" {% if complaint.complaint_status == "unresolved" %}selected{% endif %}>Unresolved</option>
+        </select>
+        <button type="submit" class="status-update-btn">Update Status</button>
+    </form>
+</div>
+{% endblock %}

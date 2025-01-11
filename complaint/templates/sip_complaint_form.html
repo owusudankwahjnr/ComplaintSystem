@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Submit a Complaint{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'submit.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="form-container">
+    <h2 class="form-title">{{title}}</h2>
+    <form method="POST" class="complaint-form">
+        {% csrf_token %}
+        <div class="form-row">
+            <div class="form-group">
+                {{ form.name.label_tag }}
+                {{ form.name }}
+            </div>
+            <div class="form-group">
+                {{ form.student_id.label_tag }}
+                {{ form.student_id }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                {{ form.phone_number.label_tag }}
+                {{ form.phone_number }}
+            </div>
+            <div class="form-group">
+                {{ form.personal_email.label_tag }}
+                {{ form.personal_email }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                {{ form.complaint_category.label_tag }}
+                {{ form.complaint_category }}
+                <datalist id="complaint_categories">
+                    {% for category in complaint_categories %}
+                    <option value="{{ category }}"></option>
+                    {% endfor %}
+                </datalist>
+            </div>
+            <div class="form-group">
+                {{ form.certificate_type.label_tag }}
+                {{ form.certificate_type }}
+                <datalist id="certificate_types">
+                    {% for certificate_type in certificate_types %}
+                    <option value="{{ certificate_type }}"></option>
+                    {% endfor %}
+                </datalist>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                {{ form.student_level.label_tag }}
+                {{ form.student_level }}
+            </div>
+            <div class="form-group">
+                {{ form.program.label_tag }}
+                {{ form.program }}
+                <datalist id="programs">
+                    {% for program in programs %}
+                    <option value="{{ program }}"></option>
+                    {% endfor %}
+                </datalist>
+            </div>
+            <div class="form-group">
+                {{ form.course.label_tag }}
+                {{ form.course }}
+                <datalist id="courses">
+                    {% for course in courses %}
+                    <option value="{{ course }}"></option>
+                    {% endfor %}
+                </datalist>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                {{ form.description.label_tag }}
+                {{ form.description }}
+            </div>
+        </div>
+        <div class="form-row">
+            <button type="submit" class="btn-submit">Submit Complaint</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

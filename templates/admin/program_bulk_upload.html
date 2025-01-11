@@ -1,0 +1,14 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+  <h1>Bulk Upload Programs</h1>
+  <p>Upload an Excel file containing programs. Ensure the file has a column labeled <strong>name</strong>.</p>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <label for="excel_file">Select an Excel file:</label>
+    <input type="file" name="excel_file" id="excel_file" accept=".xls, .xlsx">
+    <br><br>
+    <button type="submit" class="button">Upload</button>
+  </form>
+  <a href="../">Back to Programs</a>
+{% endblock %}

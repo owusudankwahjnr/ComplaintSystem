@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Submit a Complaint{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'radio_button.css' %}">
+<link rel="stylesheet" href="{% static 'submit.css' %}">
+<style>
+    .alert {
+        color: #721c24;
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        border-radius: 5px;
+        padding: 10px;
+        margin-bottom: 15px;
+        display: none; /* Hidden by default */
+    }
+
+    .alert span {
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2 class="form-title">{{ title }}</h2>
+    <form method="POST" class="complaint-form" id="anonymous_form">
+        {% csrf_token %}
+        <span class="title-span">
+            Welcome to the Gender Desk! <br> We take complaints seriously. You have the option to submit an anonymous complaint.
+        </span>
+        <hr>
+        <div id="form-alert" class="alert"></div> <!-- Alert Section -->
+
+        <!-- Toggle Anonymity -->
+        <div class="form-row anonymity-toggle">
+            <label for="anonymous_toggle">
+                <input style="font-size: 0.9rem;" type="checkbox" id="anonymous_toggle" name="anonymous_toggle" value="on">
+                I Want To Be Anonymous
+            </label>
+            <span class="alert-span" id="alert-span">
+                Tick “I Want To Be Anonymous” to submit an anonymous complaint.
+            </span>
+        </div>
+
+        <!-- Personal Information Fields -->
+        <div id="personal-info" style="display: none;">
+            <div class="form-row">
+                <div class="form-group">
+                    {{ form.name.label_tag }}
+                    {{ form.name }}
+                </div>
+                <div class="form-group">
+                    {{ form.phone_number.label_tag }}
+                    {{ form.phone_number }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Complaint Category and Description -->
+        <div class="form-row">
+            <div class="form-group" id="gender-div">
+                {{ form.gender.label_tag }}
+                {{ form.gender }}
+                <datalist id="gender_type">
+                    {% for gender in gender_type %}
+                    <option value="{{ gender }}"></option>
+                    {% endfor %}
+                </datalist>
+            </div>
+            <div class="form-group">
+                {{ form.complaint_category.label_tag }}
+                {{ form.complaint_category }}
+                <datalist id="complaint_categories">
+                    {% for category in complaint_categories %}
+                    <option value="{{ category }}"></option>
+                    {% endfor %}
+                </datalist>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                {{ form.description.label_tag }}
+                {{ form.description }}
+            </div>
+        </div>
+
+        <div class="form-row">
+            <button type="submit" class="btn-submit">Submit Complaint</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const toggleCheckbox = document.getElementById("anonymous_toggle");
+        const personalInfoDiv = document.getElementById("personal-info");
+        const spanAlert = document.getElementById("alert-span");
+        const genderDiv = document.getElementById("gender-div");
+        const alertDiv = document.getElementById("form-alert");
+
+        // Show or hide personal information fields based on the checkbox state
+        function togglePersonalInfo() {
+            if (toggleCheckbox.checked) {
+                personalInfoDiv.style.display = "none"; // Hide personal info
+                spanAlert.style.display = "none";
+                genderDiv.style.display = "none";
+            } else {
+                personalInfoDiv.style.display = "block"; // Show personal info
+                spanAlert.style.display = "block";
+                genderDiv.style.display = "block";
+            }
+        }
+
+        // Attach event listener to the checkbox
+        toggleCheckbox.addEventListener("change", togglePersonalInfo);
+
+        // Initialize visibility of personal info
+        togglePersonalInfo();
+
+        document.getElementById("anonymous_form").addEventListener("submit", function (event) {
+            let hasError = false;
+            alertDiv.style.display = "none"; // Hide alert initially
+
+            const nameInput = document.getElementById("id_name");
+            const phoneNumberInput = document.getElementById("id_phone_number");
+            const genderInput = document.getElementById("id_gender");
+            const descriptionInput = document.getElementById("id_description");
+
+            if (personalInfoDiv.style.display === "block" && nameInput.value.trim() === "") {
+                hasError = true;
+                alertDiv.style.display = "block";
+                alertDiv.innerHTML = "<span>Error:</span> Please enter your full name.";
+                nameInput.focus();
+            } else if (personalInfoDiv.style.display === "block") {
+
+                if (phoneNumberInput.value.trim() === ""){
+                    hasError = true;
+                    alertDiv.style.display = "block";
+                    alertDiv.innerHTML = "<span>Error:</span> Please enter your phone number.";
+                    phoneNumberInput.focus();
+                } else if (!/^\d{10,15}$/.test(phoneNumberInput.value.trim())) {
+                    hasError = true;
+                    alertDiv.style.display = "block";
+                    alertDiv.innerHTML = "<span>Error:</span> Please enter a valid phone number.";
+                    phoneNumberInput.focus();
+                }
+
+            } else if (genderDiv.style.display === "block" && genderInput.value.trim() === "") {
+                hasError = true;
+                alertDiv.style.display = "block";
+                alertDiv.innerHTML = "<span>Error:</span> Please enter or select a gender.";
+                genderInput.focus();
+
+            }
+
+            if (descriptionInput.value.trim() === "") {
+                hasError = true;
+                alertDiv.style.display = "block";
+                alertDiv.innerHTML = "<span>Error:</span> Please describe your complaint";
+                descriptionInput.focus();
+            }
+
+            if (hasError) {
+                event.preventDefault(); // Prevent form submission
+            }
+        });
+    });
+</script>
+{% endblock %}

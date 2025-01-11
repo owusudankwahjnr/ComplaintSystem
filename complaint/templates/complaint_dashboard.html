@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Student Complaints Dashboard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'complaint_dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <header class="dashboard-header">
+        <h1>GCTU Complaints Dashboard</h1>
+    </header>
+
+    <section class="overview">
+        <div class="card">
+            <h3>Total Complaints</h3>
+            <p id="total-complaints">{{ total_complaints }}</p>
+        </div>
+        <div class="card">
+            <h3>Resolved</h3>
+            <p id="resolved-complaints">{{ resolved_complaints }}</p>
+        </div>
+        <div class="card">
+            <h3>Pending</h3>
+            <p id="pending-complaints">{{ pending_complaints }}</p>
+        </div>
+        <div class="card">
+            <h3>Unresolved</h3>
+            <p id="unresolved-complaints">{{ unresolved_complaints }}</p>
+        </div>
+    </section>
+
+    <section class="charts">
+        <div class="chart-container" style="flex: 1;">
+            <canvas id="statusChart"></canvas>
+        </div>
+        <div class="chart-container" style="flex: 1;">
+            <canvas id="categoryChart"></canvas>
+        </div>
+    </section>
+
+    <section class="filters">
+        <h3>Filter Complaints</h3>
+        <form method="GET" action="">
+            <label id="date-range">Date Range:</label>
+            <input type="date" name="start_date"> to <input type="date" name="end_date">
+            <br>
+            <label id="category">Category:</label>
+            <select name="category">
+                <option value="">All</option>
+                {% for category in categories %}
+                <option value="{{ category }}">{{ category }}</option>
+                {% endfor %}
+            </select>
+
+            <label id="status">Status:</label>
+            <select name="status">
+                <option value="">All</option>
+                <option value="pending">Pending</option>
+                <option value="resolved">Resolved</option>
+                <option value="unresolved">Unresolved</option>
+            </select>
+            <br>
+            <label id="complaint_type">Complaint Type:</label>
+            <select name="complaint_type">
+                <option value="">All</option>
+                {% for complaint_type in complaint_types %}
+                <option value="{{ complaint_type }}">{{ complaint_type }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Apply Filters</button>
+        </form>
+    </section>
+
+    <section class="complaint-table">
+        <div class="complaint-header">
+            <h3>Complaints Details</h3>
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Search for Complaint"
+                onkeyup="filterTable()"
+            >
+        </div>
+        <div style="overflow-x: auto;">
+        <table id="complaintTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Index Number</th>
+                    <th>Category</th>
+                    <th>Complaint Type</th>
+                    <th>Status</th>
+                    <th>Created At</th>
+                    <th>Resolved At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for complaint in complaints %}
+                <tr onclick="location.href='{% url 'complaint-detail' complaint.pk %}'" style="cursor: pointer;">
+                    <td>{{ complaint.name }}</td>
+                    <td>{{ complaint.student_id }}</td>
+                    <td>{{ complaint.complaint_category }}</td>
+                    <td>{{ complaint.complaint_type }}</td>
+                    <td>{{ complaint.complaint_status }}</td>
+                    <td>{{ complaint.created_at }}</td>
+                    <td>{{ complaint.resolved_at }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    function filterTable() {
+        const input = document.getElementById("searchInput").value.toUpperCase();
+        const table = document.getElementById("complaintTable");
+        const rows = table.getElementsByTagName("tr");
+
+        for (let i = 1; i < rows.length; i++) {
+            let match = false;
+            const cells = rows[i].getElementsByTagName("td");
+
+            for (let j = 0; j < cells.length; j++) {
+                if (cells[j]) {
+                    const textValue = cells[j].textContent || cells[j].innerText;
+                    if (textValue.toUpperCase().indexOf(input) > -1) {
+                        match = true;
+                        break;
+                    }
+                }
+            }
+
+            rows[i].style.display = match ? "" : "none";
+        }
+    }
+
+    const statusChart = new Chart(document.getElementById('statusChart'), {
+        type: 'pie',
+        data: {
+            labels: ['Resolved', 'Pending', 'Unresolved'],
+            datasets: [{
+                data: [{{ resolved_complaints }}, {{ pending_complaints }}, {{ unresolved_complaints }}],
+                backgroundColor: ['#28a745', '#ffc107', '#dc3545'],
+            }]
+        },
+    });
+
+    const categoryChart = new Chart(document.getElementById('categoryChart'), {
+        type: 'bar',
+        data: {
+            labels: [{% for category in categories %}'{{ category }}',{% endfor %}],
+            datasets: [{
+                label: 'Complaints by Category',
+                data: [{% for count in category_counts %}{{ count }},{% endfor %}],
+                backgroundColor: '#007bff',
+            }]
+        },
+    });
+</script>
+{% endblock %}
