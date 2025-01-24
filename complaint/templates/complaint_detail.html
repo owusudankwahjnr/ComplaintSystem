@@ -37,15 +37,16 @@
         {% if complaint.course %}
         <p><strong>Course:</strong> {{ complaint.course }}</p>
         {% endif %}
-    {% else %}
         <p><strong>Status:</strong> {{ complaint.complaint_status }}</p>
-        {% if complaint.description %}
-            <p><strong>Description:</strong></p>
-            <p>{{ complaint.description }}</p>
-        {% endif %}
+
     {% endif %}
     <p><strong>Created At:</strong> {{ complaint.created_at|date:"d M Y" }}</p>
     <p><strong>Resolved At:</strong> {{ complaint.resolved_at|date:"d M Y" }}</p>
+
+    {% if complaint.description %}
+            <p><strong>Description:</strong></p>
+            <p>{{ complaint.description }}</p>
+    {% endif %}
     <hr>
 
     <form method="POST" action="{% url 'update-complaint-status' complaint.pk %}">
