@@ -46,6 +46,26 @@
             </span>
         </div>
 
+        <!-- Student or Stuff Fields -->
+        <div id="student_or_staff" style="display: none;">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="id_student_or_staff">Are you a student or staff?</label>
+                    <select id="id_student_or_staff" name="student_or_staff">
+                        <option value="" selected>Select</option>
+                        <option value="student">Student</option>
+                        <option value="staff">Staff</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="index-number-row" style="display: none;">
+                    {{ form.student_id.label_tag }}
+                    {{ form.student_id }}
+                </div>
+            </div>
+        </div>
+
+
         <!-- Personal Information Fields -->
         <div id="personal-info" style="display: none;">
             <div class="form-row">
@@ -96,78 +116,86 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const toggleCheckbox = document.getElementById("anonymous_toggle");
-        const personalInfoDiv = document.getElementById("personal-info");
-        const spanAlert = document.getElementById("alert-span");
-        const genderDiv = document.getElementById("gender-div");
-        const alertDiv = document.getElementById("form-alert");
+    const toggleCheckbox = document.getElementById("anonymous_toggle");
+    const personalInfoDiv = document.getElementById("personal-info");
+    const spanAlert = document.getElementById("alert-span");
+    const genderDiv = document.getElementById("gender-div");
+    const alertDiv = document.getElementById("form-alert");
+    const studentStuff = document.getElementById("student_or_staff");
+    const studentOrStaffField = document.getElementById("id_student_or_staff");
+    const indexNumberRow = document.getElementById("index-number-row");
 
-        // Show or hide personal information fields based on the checkbox state
-        function togglePersonalInfo() {
-            if (toggleCheckbox.checked) {
-                personalInfoDiv.style.display = "none"; // Hide personal info
-                spanAlert.style.display = "none";
-                genderDiv.style.display = "none";
-            } else {
-                personalInfoDiv.style.display = "block"; // Show personal info
-                spanAlert.style.display = "block";
-                genderDiv.style.display = "block";
+    // Function to toggle visibility of personal info fields
+    function togglePersonalInfo() {
+        const isAnonymous = toggleCheckbox.checked;
+        personalInfoDiv.style.display = isAnonymous ? "none" : "block";
+        spanAlert.style.display = isAnonymous ? "none" : "block";
+        genderDiv.style.display = isAnonymous ? "none" : "block";
+        studentStuff.style.display = isAnonymous ? "none" : "block";
+        indexNumberRow.style.display = isAnonymous || studentOrStaffField.value != "student" ? "none" : "block";
+    }
+
+    // Function to toggle index number field based on selection
+    function toggleIndexNumber() {
+        indexNumberRow.style.display = studentOrStaffField.value == "student" ? "block" : "none";
+    }
+
+    // Attach event listeners
+    toggleCheckbox.addEventListener("change", togglePersonalInfo);
+    studentOrStaffField.addEventListener("change", toggleIndexNumber);
+
+    // Initialize visibility on page load
+    togglePersonalInfo();
+
+    // Form validation on submission
+    document.getElementById("anonymous_form").addEventListener("submit", function (event) {
+        let hasError = false;
+        alertDiv.innerHTML = ""; // Clear previous errors
+        alertDiv.style.display = "none";
+
+        const nameInput = document.getElementById("id_name");
+        const phoneNumberInput = document.getElementById("id_phone_number");
+        const genderInput = document.getElementById("id_gender");
+        const descriptionInput = document.getElementById("id_description");
+        const studentIdInput = document.getElementById("id_student_id");
+
+        function showError(message, inputField) {
+            hasError = true;
+            alertDiv.style.display = "block";
+            alertDiv.innerHTML += `<span>Error:</span> ${message}<br>`;
+            inputField.focus();
+        }
+
+        if (personalInfoDiv.style.display === "block") {
+            if (!nameInput.value.trim()) {
+                showError("Please enter your full name.", nameInput);
+            } else if (!phoneNumberInput.value.trim()) {
+                showError("Please enter your phone number.", phoneNumberInput);
+            } else if (!/^\d{10,15}$/.test(phoneNumberInput.value.trim())) {
+                showError("Please enter a valid phone number.", phoneNumberInput);
+            } else if (studentOrStaffField.value === "student") {
+                if (!studentIdInput.value.trim()) {
+                    showError("Please enter your Student ID.", studentIdInput);
+                } else if (!/^[a-zA-Z0-9]{5,15}$/.test(studentIdInput.value.trim())) {
+                    showError("Please enter a valid Student ID (5-15 alphanumeric characters).", studentIdInput);
+                }
             }
         }
 
-        // Attach event listener to the checkbox
-        toggleCheckbox.addEventListener("change", togglePersonalInfo);
+        if (genderDiv.style.display === "block" && !genderInput.value.trim()) {
+            showError("Please enter or select a gender.", genderInput);
+        }
 
-        // Initialize visibility of personal info
-        togglePersonalInfo();
+        if (!descriptionInput.value.trim()) {
+            showError("Please describe your complaint.", descriptionInput);
+        }
 
-        document.getElementById("anonymous_form").addEventListener("submit", function (event) {
-            let hasError = false;
-            alertDiv.style.display = "none"; // Hide alert initially
-
-            const nameInput = document.getElementById("id_name");
-            const phoneNumberInput = document.getElementById("id_phone_number");
-            const genderInput = document.getElementById("id_gender");
-            const descriptionInput = document.getElementById("id_description");
-
-            if (personalInfoDiv.style.display === "block" && nameInput.value.trim() === "") {
-                hasError = true;
-                alertDiv.style.display = "block";
-                alertDiv.innerHTML = "<span>Error:</span> Please enter your full name.";
-                nameInput.focus();
-            } else if (personalInfoDiv.style.display === "block") {
-
-                if (phoneNumberInput.value.trim() === ""){
-                    hasError = true;
-                    alertDiv.style.display = "block";
-                    alertDiv.innerHTML = "<span>Error:</span> Please enter your phone number.";
-                    phoneNumberInput.focus();
-                } else if (!/^\d{10,15}$/.test(phoneNumberInput.value.trim())) {
-                    hasError = true;
-                    alertDiv.style.display = "block";
-                    alertDiv.innerHTML = "<span>Error:</span> Please enter a valid phone number.";
-                    phoneNumberInput.focus();
-                }
-
-            } else if (genderDiv.style.display === "block" && genderInput.value.trim() === "") {
-                hasError = true;
-                alertDiv.style.display = "block";
-                alertDiv.innerHTML = "<span>Error:</span> Please enter or select a gender.";
-                genderInput.focus();
-
-            }
-
-            if (descriptionInput.value.trim() === "") {
-                hasError = true;
-                alertDiv.style.display = "block";
-                alertDiv.innerHTML = "<span>Error:</span> Please describe your complaint";
-                descriptionInput.focus();
-            }
-
-            if (hasError) {
-                event.preventDefault(); // Prevent form submission
-            }
-        });
+        if (hasError) {
+            event.preventDefault(); // Stop form submission if errors exist
+        }
     });
+});
+
 </script>
+
 {% endblock %}

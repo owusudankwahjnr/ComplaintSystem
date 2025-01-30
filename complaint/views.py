@@ -167,6 +167,11 @@ def complaint_dashboard(request):
         'category_counts': category_counts,
         'complaint_types': complaint_types,
         'complaints': complaints.order_by('-created_at'),
+        'filter_start_date': start_date,
+        'filter_end_date': end_date,
+        'filter_category': category,
+        'filter_status': status,
+        'filter_complaint_type': complaint_types,
     }
 
     return render(request, 'complaint_dashboard.html', context)

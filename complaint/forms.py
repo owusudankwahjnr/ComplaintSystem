@@ -39,7 +39,7 @@ class AnonymousComplaintForm(forms.ModelForm):
     class Meta:
         model = Complaint
         fields = [
-            'name', 'phone_number', 'gender', 'complaint_category', 'description', 'complaint_type'
+            'name', 'student_id','phone_number', 'gender', 'complaint_category', 'description', 'complaint_type'
         ]
 
         widgets = {
@@ -54,6 +54,7 @@ class AnonymousComplaintForm(forms.ModelForm):
             'name': forms.TextInput(attrs={'placeholder': 'Full Name'}),
             'phone_number': forms.TextInput(attrs={'placeholder': 'Active Phone Number'}),
             'description': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Describe your complaint'}),
+            'student_id': forms.TextInput(attrs={'placeholder': 'Index Number'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -61,3 +62,4 @@ class AnonymousComplaintForm(forms.ModelForm):
         self.fields['name'].required = False
         self.fields['phone_number'].required = False
         self.fields['gender'].required = False
+        self.fields['student_id'].required = False

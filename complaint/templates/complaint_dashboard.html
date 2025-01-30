@@ -44,7 +44,7 @@
         <h3>Filter Complaints</h3>
         <form method="GET" action="">
             <label id="date-range">Date Range:</label>
-            <input type="date" name="start_date"> to <input type="date" name="end_date">
+            <input type="date" name="start_date"> to <input type="date" name="end_date" {% if filter_end_date %} placeholder="{{filter_end_date}}"  {% endif %}>
             <br>
             <label id="category">Category:</label>
             <select name="category">
